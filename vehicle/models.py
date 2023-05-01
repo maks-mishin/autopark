@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.contrib.auth.models import User, AbstractUser
 
 
 class Enterprise(models.Model):
@@ -60,7 +61,7 @@ class Vehicle(models.Model):
     enterprise = models.ForeignKey(Enterprise, on_delete=models.CASCADE,
                                    related_name='vehicles', verbose_name='Предприятие',
                                    blank=True, null=True)
-
+    
     class Meta:
         ordering = ['price']
         verbose_name = 'Автомобиль'
@@ -80,6 +81,8 @@ class Vehicle(models.Model):
                 raise ValidationError('У автомобиля есть активный водитель')
 
     def has_active_driver(self):
+        if not self.drivers:
+            return False
         return self.drivers.filter(is_active=True).exists()
 
 
@@ -119,3 +122,18 @@ class Driver(models.Model):
             self.check_active_car()
         if self.is_active and self.vehicle != self.__vehicle:
             raise ValidationError('Активный водитель не может сменить машину')
+
+
+class Manager(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='Имя')
+    enterprises = models.ManyToManyField(Enterprise, blank=True, verbose_name='Предприятия')
+
+    class Meta:
+        verbose_name = 'Менеджер'
+        verbose_name_plural = 'Менеджеры'
+
+    def __str__(self):
+        return self.user.username
+
+    def list_enterprises(self):
+        return " | ".join([e.name for e in self.enterprises.all()])

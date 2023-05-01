@@ -1,0 +1,13 @@
+{% extends 'bootstrap.html' %}
+
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{% block bootstrap5_content %}
+  <div class="container">
+    {% include 'include/nav.html' %}
+    {% block content %}{% endblock %}
+    {% include 'include/footer.html' %}
+  </div>
+{% endblock %}

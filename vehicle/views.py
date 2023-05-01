@@ -1,24 +1,29 @@
-from rest_framework import generics
-from vehicle.serializers import VehicleSerializer, BrandSerializer, \
-    EnterpriseSerializer, DriverSerializer
-from vehicle.models import Vehicle, Brand, Enterprise, Driver
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
+from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy
+from django.views.generic import CreateView, ListView
+
+from vehicle.forms import VehicleForm
+from vehicle.models import Vehicle
 
 
-class VehicleList(generics.ListAPIView):
+class VehicleListView(SuccessMessageMixin, ListView):
+    model = Vehicle
     queryset = Vehicle.objects.all()
-    serializer_class = VehicleSerializer
+    template_name = 'vehicles/list.html'
+    context_object_name = 'vehicles'
 
 
-class BrandList(generics.ListAPIView):
-    queryset = Brand.objects.all()
-    serializer_class = BrandSerializer
+class VehicleCreateView(SuccessMessageMixin,
+                        CreateView):
+    model = Vehicle
+    template_name = 'vehicles/create.html'
+    form_class = VehicleForm
+    success_message = gettext_lazy('Новый автомобиль успешно добавлен')
+    success_url = reverse_lazy('list_vehicles')
 
-
-class EnterpriseList(generics.ListAPIView):
-    queryset = Enterprise.objects.all()
-    serializer_class = EnterpriseSerializer
-
-
-class DriverList(generics.ListAPIView):
-    queryset = Driver.objects.all()
-    serializer_class = DriverSerializer
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['drivers'] = []
+        return initial
