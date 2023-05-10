@@ -5,6 +5,8 @@ from vehicle.models import Manager, Driver,Vehicle
 
 class IsManagerPermission(BasePermission):
     def has_permission(self, request, view):
+        if request.user.is_anonymous:
+            return False
         return len(Manager.objects.filter(user=request.user)) > 0 or request.user.is_superuser
 
     def has_object_permission(self, request, view, obj):

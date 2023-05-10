@@ -1,7 +1,9 @@
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import Http404
 from rest_framework import generics, status
+from rest_framework.decorators import permission_classes
 from rest_framework.parsers import JSONParser
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -9,6 +11,18 @@ from api.permissions import IsManagerPermission
 from api.serializers import VehicleSerializer, BrandSerializer, \
     EnterpriseSerializer, DriverSerializer
 from vehicle.models import Vehicle, Brand, Enterprise, Driver, Manager
+
+
+@permission_classes((AllowAny,))
+class TestVehicleList(generics.ListAPIView):
+    queryset = Vehicle.objects.all()
+    serializer_class = VehicleSerializer
+
+
+@permission_classes((AllowAny,))
+class TestDriverList(generics.ListAPIView):
+    queryset = Driver.objects.all()
+    serializer_class = DriverSerializer
 
 
 class VehicleList(APIView):

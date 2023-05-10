@@ -3,7 +3,7 @@ MANAGE := python manage.py
 run:
 	@$(MANAGE) runserver
 
-setup: db-clean install migrate
+setup: db-clean migrate
 
 migrate:
 	@$(MANAGE) makemigrations
@@ -24,3 +24,6 @@ lint:
 
 super:
 	@$(MANAGE) createsuperuser
+
+data:
+	@$(MANAGE) generate_data 1 10 5
