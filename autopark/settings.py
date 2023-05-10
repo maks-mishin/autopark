@@ -19,6 +19,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'vehicle',
+    'driver',
+    'enterprise',
+    'manager',
     'api'
 ]
 
@@ -34,7 +37,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'motor_pool.urls'
+ROOT_URLCONF = 'autopark.urls'
 
 TEMPLATES = [
     {
@@ -52,7 +55,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'motor_pool.wsgi.application'
+WSGI_APPLICATION = 'autopark.wsgi.application'
 
 DATABASES = {
     'default': {
