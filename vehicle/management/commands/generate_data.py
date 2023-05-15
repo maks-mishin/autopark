@@ -21,13 +21,14 @@ class Command(BaseCommand):
         parser.add_argument('num_drivers', type=int, help='Number of Drivers per Enterprise')
 
     def handle(self, *args, **options):
-        fake = Faker()
-        brands = [Brand.objects.create(title=fake.name()) for _ in range(5)]
         fake = Faker('ru_RU')
+        brands = [Brand.objects.create(title=fake.name()) for _ in range(5)]
         num_vehicles = options['num_vehicles']
         num_drivers = options['num_drivers']
 
-        enterprise = Enterprise.objects.create(name='Test enterprise')
+        enterprises = [
+            Enterprise.objects.create(name=f'Test enterprise {i}') for i in range(1, 4)
+        ]
         for j in range(1, num_vehicles + 1):
             vehicle = Vehicle.objects.create(
                 price=fake.random_int(min=100000, max=5000000, step=10000),
@@ -35,7 +36,7 @@ class Command(BaseCommand):
                 mileage=fake.random_int(min=1000, max=200000, step=1000),
                 number=self.create_vehicle_number(),
                 brand=random.choice(brands),
-                enterprise=enterprise
+                enterprise=random.choice(enterprises)
             )
             driver = Driver(
                 first_name=fake.first_name(),
@@ -43,11 +44,10 @@ class Command(BaseCommand):
                 age=random.randint(18, 80),
                 salary=random.randint(24000, 80000),
                 vehicle=vehicle,
-                enterprise=enterprise,
+                enterprise=random.choice(enterprises),
                 is_active=False
             )
             if j % 10 == 0:
                 driver.is_active = True
             driver.save()
         self.stdout.write(self.style.SUCCESS("Data created successfully"))
-

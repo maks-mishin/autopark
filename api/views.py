@@ -2,6 +2,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import Http404
 from rest_framework import generics, status
 from rest_framework.decorators import permission_classes
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.parsers import JSONParser
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -13,8 +14,15 @@ from api.serializers import VehicleSerializer, BrandSerializer, \
 from vehicle.models import Vehicle, Brand, Enterprise, Driver, Manager
 
 
+class ApiPaginator(PageNumberPagination):
+    page_size = 30
+    page_query_param = 'page_size'
+    max_page_size = 50
+
+
 @permission_classes((AllowAny,))
 class TestVehicleList(generics.ListAPIView):
+    pagination_class = ApiPaginator
     queryset = Vehicle.objects.all()
     serializer_class = VehicleSerializer
 
