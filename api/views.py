@@ -51,8 +51,8 @@ class VehicleList(APIView):
         if request.user.is_superuser:
             vehicles = Vehicle.objects.all()
         elif Manager.objects.filter(user=request.user):
-            mngr = Manager.objects.filter(user=request.user)[0]
-            enterprises = mngr.enterprises.all()
+            manager = Manager.objects.filter(user=request.user)[0]
+            enterprises = manager.enterprises.all()
             vehicles = Vehicle.objects.filter(enterprise__in=enterprises)
         else:
             print('Error in server logic, should have failed on "check_permissions" stage.')
