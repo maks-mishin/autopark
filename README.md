@@ -1,2 +1,3 @@
-# motor-pool
-Car accounting + tracking
+# Проект "Автопарк"
+
+Учёт автомобилей + трекинг.
